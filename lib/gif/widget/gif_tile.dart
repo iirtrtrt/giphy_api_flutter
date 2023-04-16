@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:giphy_gif/common/const/colors.dart';
 import 'package:giphy_gif/gif/model/gif_model.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:giphy_gif/gif/widget/gif_dialog.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 
 class GifTile extends StatefulWidget {
@@ -16,18 +17,21 @@ class GifTile extends StatefulWidget {
 class _GifTileState extends State<GifTile> {
   double padding = 4.0;
 
+  void updatePadding(double paddingValue) {
+    setState(() {
+      padding = paddingValue;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onLongPressStart: (_) {
-        setState(() {
-          padding = 12.0;
-        });
+      onLongPressStart: (details) {
+        updatePadding(12.0);
       },
       onLongPressEnd: (details) {
-        setState(() {
-          padding = 4.0;
-        });
+        showScaleDialog(context, widget.gif);
+        updatePadding(4.0);
       },
       child: AnimatedPadding(
         padding: EdgeInsets.all(padding),

@@ -43,6 +43,7 @@ dependencies:
   flutter_dotenv: ^5.0.2
   cached_network_image: ^3.2.3
   shimmer_animation: ^2.1.0+1
+  url_launcher: ^6.1.10
 
 dev_dependencies:
   flutter_test:

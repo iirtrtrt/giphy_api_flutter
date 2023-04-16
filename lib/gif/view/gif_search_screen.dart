@@ -31,7 +31,8 @@ class _GifSearchScreenState extends ConsumerState<GifSearchScreen> {
     _scrollController.addListener(() {
       double maxScroll = _scrollController.position.maxScrollExtent;
       double currentScroll = _scrollController.position.pixels;
-      double delta = MediaQuery.of(context).size.width * 0.32;
+      double delta = MediaQuery.of(context).size.width * 0.36;
+
       if (maxScroll - currentScroll <= delta) {
         ref
             .read(gifListProvider.notifier)
