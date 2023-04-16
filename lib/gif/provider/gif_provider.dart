@@ -23,6 +23,8 @@ class GifStateNotifier extends StateNotifier<List<GifModel>> {
     _offset += 20;
     final List<GifModel> newGifs =
         await _gifRepositoryProvider.gifSearch(query, _offset);
-    state = [...state, ...newGifs];
+    if (newGifs.isNotEmpty) {
+      state = [...state, ...newGifs];
+    }
   }
 }

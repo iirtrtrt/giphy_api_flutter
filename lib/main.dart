@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:giphy_gif/common/const/colors.dart';
 import 'package:giphy_gif/gif/view/gif_search_screen.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -19,10 +20,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+      theme: Theme.of(context).copyWith(
+        colorScheme: Theme.of(context).colorScheme.copyWith(
+              primary: PRIMARY_COLOR,
+              secondary: PRIMARY_COLOR,
+            ),
       ),
-      home: GifSearchScreen(),
+      home: const GifSearchScreen(),
     );
   }
 }
