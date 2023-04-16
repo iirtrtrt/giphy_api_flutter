@@ -28,8 +28,9 @@ class GifStateNotifier extends StateNotifier<GifState> {
 
   Future<void> gifSearch(String query) async {
     try {
-      state = const GifState(isLoading: true);
+      state = GifState(isLoading: true, data: state.data);
       _offset = 0;
+
       final data = await _gifRepositoryProvider.gifSearch(query, _offset);
       state = GifState(data: data);
     } catch (e) {
@@ -43,6 +44,7 @@ class GifStateNotifier extends StateNotifier<GifState> {
     try {
       state = GifState(isLoading: true, data: state.data);
       _offset += 20;
+
       final List<GifModel> newGifs =
           await _gifRepositoryProvider.gifSearch(query, _offset);
       if (newGifs.isNotEmpty) {
