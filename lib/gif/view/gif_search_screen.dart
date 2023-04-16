@@ -28,6 +28,8 @@ class _GifSearchScreenState extends ConsumerState<GifSearchScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final gifs = ref.watch(gifListProvider);
+
     _scrollController.addListener(() {
       double maxScroll = _scrollController.position.maxScrollExtent;
       double currentScroll = _scrollController.position.pixels;
@@ -55,8 +57,12 @@ class _GifSearchScreenState extends ConsumerState<GifSearchScreen> {
               fontWeight: FontWeight.w500,
             ),
             cursorColor: Colors.white,
-            decoration: const InputDecoration(
-              contentPadding: EdgeInsets.symmetric(horizontal: 8),
+            decoration: InputDecoration(
+              contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+              hintText: 'Search',
+              hintStyle: TextStyle(
+                color: Colors.grey[400],
+              ),
             ),
             onChanged: (value) {
               if (_debounceTimer?.isActive ?? false) {
@@ -76,23 +82,30 @@ class _GifSearchScreenState extends ConsumerState<GifSearchScreen> {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(4.0),
-              child: Consumer(
-                builder: (context, watch, child) {
-                  final gifs = ref.watch(gifListProvider);
-                  return GridView.builder(
-                    keyboardDismissBehavior:
-                        ScrollViewKeyboardDismissBehavior.onDrag,
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 1,
+              child: gifs.isNotEmpty
+                  ? GridView.builder(
+                      keyboardDismissBehavior:
+                          ScrollViewKeyboardDismissBehavior.onDrag,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 1,
+                      ),
+                      controller: _scrollController,
+                      itemCount: gifs.length,
+                      itemBuilder: (context, index) =>
+                          GifTile(gif: gifs[index]),
+                    )
+                  : const Center(
+                      child: Text(
+                        'Let us search GIF! :D',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                     ),
-                    controller: _scrollController,
-                    itemCount: gifs.length,
-                    itemBuilder: (context, index) => GifTile(gif: gifs[index]),
-                  );
-                },
-              ),
             ),
           ),
         ],
