@@ -4,7 +4,7 @@ import 'package:giphy_gif/gif/repository/gif_repository.dart';
 
 final gifRepositoryProvider = Provider((ref) => GifRepositoryProvider());
 
-final gifsProvider = StateNotifierProvider<GifStateNotifier, GifState>(
+final gifProvider = StateNotifierProvider<GifStateNotifier, GifState>(
   (ref) => GifStateNotifier(ref.watch(gifRepositoryProvider)),
 );
 
