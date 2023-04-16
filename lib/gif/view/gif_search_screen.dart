@@ -28,16 +28,17 @@ class _GifSearchScreenState extends ConsumerState<GifSearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final gifs = ref.watch(gifListProvider);
+    final gifs = ref.watch(gifsProvider).data;
 
     _scrollController.addListener(() {
       double maxScroll = _scrollController.position.maxScrollExtent;
       double currentScroll = _scrollController.position.pixels;
       double delta = MediaQuery.of(context).size.width * 0.36;
 
-      if (maxScroll - currentScroll <= delta) {
+      if (maxScroll - currentScroll <= delta &&
+          !ref.watch(gifsProvider).isLoading) {
         ref
-            .read(gifListProvider.notifier)
+            .read(gifsProvider.notifier)
             .gifFetchMore(_textEditingController.text);
       }
     });
@@ -65,6 +66,11 @@ class _GifSearchScreenState extends ConsumerState<GifSearchScreen> {
               ),
             ),
             onChanged: (value) {
+              _scrollController.animateTo(
+                0,
+                duration: const Duration(milliseconds: 200),
+                curve: Curves.easeInOut,
+              );
               if (_debounceTimer?.isActive ?? false) {
                 _debounceTimer?.cancel();
               }
@@ -72,7 +78,7 @@ class _GifSearchScreenState extends ConsumerState<GifSearchScreen> {
                 const Duration(milliseconds: 300),
                 () {
                   if (value.isNotEmpty) {
-                    ref.watch(gifListProvider.notifier).gifSearch(value);
+                    ref.watch(gifsProvider.notifier).gifSearch(value);
                   }
                 },
               );
