@@ -12,11 +12,13 @@ class GifState {
   final List<GifModel> data;
   final bool isLoading;
   final bool hasError;
+  final bool fetchDone;
 
   const GifState({
     this.data = const [],
     this.isLoading = false,
     this.hasError = false,
+    this.fetchDone = false,
   });
 }
 
@@ -28,32 +30,32 @@ class GifStateNotifier extends StateNotifier<GifState> {
 
   Future<void> gifSearch(String query) async {
     try {
-      state = GifState(isLoading: true, data: state.data);
+      state = GifState(data: state.data);
       _offset = 0;
 
       final data = await _gifRepositoryProvider.gifSearch(query, _offset);
       state = GifState(data: data);
     } catch (e) {
       state = const GifState(hasError: true);
-    } finally {
-      state = GifState(data: state.data, isLoading: false);
     }
   }
 
   Future<void> gifFetchMore(String query) async {
     try {
-      state = GifState(isLoading: true, data: state.data);
-      _offset += 20;
+      if (!state.fetchDone) {
+        state = GifState(isLoading: true, data: state.data);
+        _offset += 20;
 
-      final List<GifModel> newGifs =
-          await _gifRepositoryProvider.gifSearch(query, _offset);
-      if (newGifs.isNotEmpty) {
-        state = GifState(data: [...state.data, ...newGifs]);
+        final List<GifModel> newGifs =
+            await _gifRepositoryProvider.gifSearch(query, _offset);
+        if (newGifs.isEmpty) {
+          state = GifState(data: state.data, fetchDone: true);
+        } else {
+          state = GifState(data: [...state.data, ...newGifs]);
+        }
       }
     } catch (e) {
       state = const GifState(hasError: true);
-    } finally {
-      state = GifState(data: state.data, isLoading: false);
     }
   }
 }

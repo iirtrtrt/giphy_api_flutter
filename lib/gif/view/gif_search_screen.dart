@@ -28,15 +28,16 @@ class _GifSearchScreenState extends ConsumerState<GifSearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final gifs = ref.watch(gifProvider).data;
+    final state = ref.watch(gifProvider);
 
     _scrollController.addListener(() {
       double maxScroll = _scrollController.position.maxScrollExtent;
       double currentScroll = _scrollController.position.pixels;
-      double delta = MediaQuery.of(context).size.width * 0.48;
+      double delta = MediaQuery.of(context).size.width * 0.36;
 
       if (maxScroll - currentScroll <= delta &&
-          !ref.watch(gifProvider).isLoading) {
+          !state.isLoading &&
+          !state.fetchDone) {
         ref
             .read(gifProvider.notifier)
             .gifFetchMore(_textEditingController.text);
@@ -45,7 +46,7 @@ class _GifSearchScreenState extends ConsumerState<GifSearchScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Giphy Search API made by TK'),
+        title: const Text('Giphy Search API'),
       ),
       backgroundColor: BACKGROUND_COLOR,
       body: Column(
@@ -66,11 +67,11 @@ class _GifSearchScreenState extends ConsumerState<GifSearchScreen> {
               ),
             ),
             onChanged: (value) {
-              _scrollController.animateTo(
-                0,
-                duration: const Duration(milliseconds: 200),
-                curve: Curves.easeInOut,
-              );
+              if (state.data.isNotEmpty) {
+                _scrollController.animateTo(0,
+                    duration: const Duration(milliseconds: 200),
+                    curve: Curves.easeOut);
+              }
               if (_debounceTimer?.isActive ?? false) {
                 _debounceTimer?.cancel();
               }
@@ -84,23 +85,27 @@ class _GifSearchScreenState extends ConsumerState<GifSearchScreen> {
               );
             },
           ),
-          const SizedBox(height: 4),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: gifs.isNotEmpty
-                  ? GridView.builder(
-                      keyboardDismissBehavior:
-                          ScrollViewKeyboardDismissBehavior.onDrag,
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 1,
+              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+              child: state.data.isNotEmpty
+                  ? ScrollConfiguration(
+                      behavior: state.isLoading
+                          ? NoGlowScrollBehavior()
+                          : const ScrollBehavior(),
+                      child: GridView.builder(
+                        keyboardDismissBehavior:
+                            ScrollViewKeyboardDismissBehavior.onDrag,
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: 1,
+                        ),
+                        controller: _scrollController,
+                        itemCount: state.data.length,
+                        itemBuilder: (context, index) =>
+                            GifTile(gif: state.data[index]),
                       ),
-                      controller: _scrollController,
-                      itemCount: gifs.length,
-                      itemBuilder: (context, index) =>
-                          GifTile(gif: gifs[index]),
                     )
                   : const Center(
                       child: Text(
@@ -114,8 +119,28 @@ class _GifSearchScreenState extends ConsumerState<GifSearchScreen> {
                     ),
             ),
           ),
+          state.isLoading
+              ? const Padding(
+                  padding: EdgeInsets.only(top: 4, bottom: 12),
+                  child: CircularProgressIndicator(),
+                )
+              : const SizedBox.shrink(),
+          state.hasError
+              ? const Padding(
+                  padding: EdgeInsets.only(top: 4, bottom: 12),
+                  child: Text("Something went to wrong..."),
+                )
+              : const SizedBox.shrink(),
         ],
       ),
     );
+  }
+}
+
+class NoGlowScrollBehavior extends ScrollBehavior {
+  @override
+  Widget buildOverscrollIndicator(
+      BuildContext context, Widget child, ScrollableDetails details) {
+    return child;
   }
 }
