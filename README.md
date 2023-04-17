@@ -4,7 +4,10 @@
 
 An application made with Flutter.<br>
 Using Giphy API: https://developers.giphy.com/docs/api/endpoint/#search<br>
-The user can search gifs with query and get all search results with infinite scrolling.<br>
+The user can search gifs with query and get all search results with infinite scrolling.<br><br>
+<img src="/public/search.gif" width="240">
+<img src="/public/dialogue.gif" width="240">
+<img src="/public/infinite.gif" width="240">
 
 
 ## Getting Started
@@ -54,5 +57,5 @@ flutter run
 ```
 
 ## How to use
-![how_to_use](https://user-images.githubusercontent.com/69069300/232326629-963fe77e-6981-47d4-a535-9e6779d4574d.png)
+<img src="/public/how_to_use.png">
 
