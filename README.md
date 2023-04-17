@@ -47,7 +47,7 @@ cd ./giphy_api_flutter
 
 ## Run
 
-1. Install packages && Run application:
+Install packages && Run application:
 
 ```sh
 flutter run
