@@ -48,6 +48,7 @@ class _GifTileState extends State<GifTile> {
             ),
           ),
           placeholder: (context, url) => Shimmer(
+            colorOpacity: 0.08,
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
