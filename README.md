@@ -17,7 +17,7 @@ The user can search gifs with query and get all search results with infinite scr
 #### Recommended framework versions:
 Flutter 3.7.11
 
-#### Recommended package verstions:
+#### Recommended package versions:
 json_annotation: ^4.8.0<br>
 dio: ^5.1.1<br>
 flutter_riverpod: ^2.3.4<br>
